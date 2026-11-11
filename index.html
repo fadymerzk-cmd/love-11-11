@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فادي & مارينا | Our Eternal Love Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b070d;
+            --card-bg: rgba(22, 14, 26, 0.75);
+            --pink-accent: #ff3366;
+            --pink-glow: rgba(255, 51, 102, 0.4);
+            --gold-accent: #ffcb74;
+            --text-light: #fceef2;
+            --text-muted: #a395a8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Floating Hearts Background Canvas */
+        #heart-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Login Screen Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1f0b18 0%, #080307 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            box-shadow: 0 0 35px var(--pink-glow);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 40px 25px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .login-card p.subtitle {
+            font-size: 0.85rem;
+            color: var(--gold-accent);
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 15px var(--pink-glow);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(45deg, #ff3366, #ff6b8b);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--pink-glow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px 15px 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Banner 11/11 */
+        .special-date-banner {
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.15), rgba(255, 203, 116, 0.15));
+            border: 1px solid rgba(255, 203, 116, 0.4);
+            box-shadow: 0 0 20px rgba(255, 203, 116, 0.2);
+            border-radius: 20px;
+            padding: 18px 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .special-date-banner h3 {
+            color: var(--gold-accent);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .special-date-banner p {
+            font-size: 0.9rem;
+            color: #eae1eb;
+            line-height: 1.5;
+        }
+
+        /* Header Title */
+        .main-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-header h2 {
+            font-size: 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .main-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        /* Love Counter */
+        .counter-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .counter-section p.start-label {
+            color: var(--gold-accent);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .timer-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 15px 5px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .timer-card span.num {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--pink-accent);
+            text-shadow: 0 0 10px var(--pink-glow);
+        }
+
+        .timer-card span.unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Music Player Bar */
+        .music-bar {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.2);
+        }
+
+        .song-info {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .song-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .song-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .play-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--pink-accent);
+            border: none;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 12px var(--pink-glow);
+        }
+
+        /* Love Promises List */
+        .promises-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .promise-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .promise-item span.icon {
+            font-size: 1.2rem;
+        }
+
+        /* Interactive Flip Cards */
+        .flip-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 110px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .flip-card-front {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 203, 116, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 2.2rem;
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, #ff3366, #e6004c);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+            box-shadow: 0 0 15px var(--pink-glow);
+        }
+
+        /* Photo Gallery with Reveal Animation */
+        .gallery-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .photo-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        .photo-card.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-caption {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            background: rgba(11, 7, 13, 0.85);
+        }
+
+        /* Action Buttons Section */
+        .actions-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .glow-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 203, 116, 0.5);
+            background: linear-gradient(45deg, rgba(35, 18, 38, 0.9), rgba(55, 22, 45, 0.9));
+            color: var(--gold-accent);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 203, 116, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .glow-btn.pink-style {
+            border-color: rgba(255, 51, 102, 0.5);
+            color: #fff;
+            background: linear-gradient(45deg, rgba(60, 15, 30, 0.9), rgba(90, 20, 45, 0.9));
+            box-shadow: 0 0 15px var(--pink-glow);
+        }
+
+        .glow-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Love Letter Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 203, 116, 0.4);
+            box-shadow: 0 0 40px rgba(255, 203, 116, 0.25);
+            border-radius: 24px;
+            padding: 30px 20px;
+            max-width: 420px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.4s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-heart-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .modal h2 {
+            color: var(--gold-accent);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .letter-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #f3e5f5;
+            text-align: right;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+
+        .letter-footer {
+            color: var(--pink-accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Qulub Floating Canvas Background -->
+    <canvas id="heart-canvas"></canvas>
+
+    <!-- Login Screen -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>فادي & مارينا</h1>
+            <p class="subtitle">✨ OUR ETERNAL LOVE STORY ✨</p>
+            <input type="password" id="password-input" class="login-input" placeholder="اكتبي الباسورد هنا يا روحي">
+            <button onclick="checkPassword()" class="login-btn">دوسي هنا 😂</button>
+            <p id="error-msg" class="error-msg">الباسورد مش صح يا حبيبتي! :  ❤️</p>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Player -->
+    <video id="bg-audio" loop style="display: none;">
+        <source src="love5.mp3" type="video/mp4">
+    </video>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- 11/11 Special Banner -->
+        <div class="special-date-banner">
+            <h3>✨ بمناسبة اليوم المميز 11/11 ✨</h3>
+            <p>النهاردة مش مجرد تاريخ عادي، النهاردة يوم مميز جداً لأنك في حياتي يا أغلى حاجة عندي في الدنيا كلها ❤️</p>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <h2>حكايتنا ❤️</h2>
+            <p>كل لحظة معاكي هي عمر جديد</p>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="counter-section">
+            <p class="start-label">منذ أن بدأت القصة 😍😍😍</p>
+            <div class="timer-grid">
+                <div class="timer-card">
+                    <span class="num" id="years">0</span>
+                    <span class="unit">سنة</span>
+                </div>
+                <div class="timer-card">
+                    <span class="num" id="months">0</span>
+                    <span class="unit">شهر</span>
+                </div>
+                <div class="timer-card">
+                    <span class="num" id="days">0</span>
+                    <span class="unit">يوم</span>
+                </div>
+                <div class="timer-card">
+                    <span class="num" id="hours">0</span>
+                    <span class="unit">ساعة</span>
+                </div>
+                <div class="timer-card">
+                    <span class="num" id="minutes">0</span>
+                    <span class="unit">دقيقة</span>
+                </div>
+                <div class="timer-card">
+                    <span class="num" id="seconds">0</span>
+                    <span class="unit">ثانية</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Player Controls -->
+        <div class="music-bar">
+            <div class="song-info">
+                <span class="song-title">نور عيني</span>
+                <span class="song-sub">🎵 الأغنية اللي بتوصفنا</span>
+            </div>
+            <button class="play-btn" id="audio-toggle" onclick="toggleAudio()">❚❚</button>
+        </div>
+
+        <!-- Promises -->
+        <div class="promises-list">
+            <div class="promise-item">
+                <span>هفضل سندك في كل وقت</span>
+                <span class="icon">🤝❤️</span>
+            </div>
+            <div class="promise-item">
+                <span>هكون دائماً أمانك وضحكتك</span>
+                <span class="icon">🛡️✨</span>
+            </div>
+            <div class="promise-item">
+                <span>حبنا ملوش نهاية.. وعد</span>
+                <span class="icon">♾️❤️</span>
+            </div>
+        </div>
+
+        <!-- Interactive 3 Flip Cards -->
+        <div class="flip-cards-grid">
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">⭐</div>
+                    <div class="flip-card-back">إنتي أجمل نعمة في حياتي ❤️</div>
+                </div>
+            </div>
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">✉️</div>
+                    <div class="flip-card-back">وجودك بيخلي الدنيا منورة ✨</div>
+                </div>
+            </div>
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">🎁</div>
+                    <div class="flip-card-back">ملكة قلبي للأبد 💍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Gallery -->
+        <div class="gallery-section">
+            <div class="photo-card">
+                <img src="love1.png" alt="Love 1">
+                <div class="photo-caption">أحلى صدفة في عمري ❤️</div>
+            </div>
+            <div class="photo-card">
+                <img src="love2.png" alt="Love 2">
+                <div class="photo-caption">ضحكتك هي حياتي ✨</div>
+            </div>
+            <div class="photo-card">
+                <img src="love3.png" alt="Love 3">
+                <div class="photo-caption">عالمي الخاص بيكي 🌌</div>
+            </div>
+            <div class="photo-card">
+                <img src="love4.png" alt="Love 4">
+                <div class="photo-caption">بموت فيكي يا مارينا 💍❤️</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-section">
+            <button class="glow-btn" onclick="openModal('modal-main')">
+                🎁 في حاجة أخيرة ليكي..
+            </button>
+            <button class="glow-btn pink-style" onclick="openModal('modal-fady')">
+                💌 افتح الجواب دوت من فادي ليكي 💌
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal 1: Original Letter -->
+    <div class="modal" id="modal-main">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('modal-main')">✕</button>
+            <div class="modal-heart-icon">💖</div>
+            <h2>ملكة قلبي..</h2>
+            <div class="letter-text">
+                حبيبتي "مارينا".. عايز أقولك إن كل كلمة كتبتها هنا وكل صورة حطيتها هي جزء صغير من اللي حاسه بيكي. إنتي مش بس حبيبتي، إنتي بنتي وصحبتي وأماني. هفضل دايماً جنبكي، وهيفضل حبنا بيكبر كل يوم عن اللي قبله. ربنا يخليكي ليا يا أغلى من عمري.
+            </div>
+            <div class="letter-footer">بحبك يا مارينا.. للأبد ❤️</div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Special Message from Fady -->
+    <div class="modal" id="modal-fady">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('modal-fady')">✕</button>
+            <div class="modal-heart-icon">📜✨</div>
+            <h2>رسالة خاصة جداً من قلبي 💖</h2>
+            <div class="letter-text">
+                <strong>✨ يوم من جديد ✨</strong>
+
+                في 11/11 بتمنى من كل قلبي إننا نفضل مع بعض وإين الأيام الجاية تكون أحلى لينا وإن مهما قابلتنا ظروف أو حصل بينا اختلاف نعرف نفهم بعض ونعدي أي حاجة وإحنا متمسكين ببعض مش عايز من الدنيا حاجات كتير كل اللي نفسي فيه إننا نفضل سبب حلو في حياة بعض ونفضل نختار بعض كل يوم من جديد.
+
+                عايز أكون الشخص اللي تقدر تحكيله من غير ما تخاف من حكم أو لوم واللي تلاقي عنده اهتمام واحتواء واللي يفرح لفرحتك ويشجعك في كل خطوة وعايزاك تعرفي إنك تستاهلي كل الحب اللي ف الدنيا وإن وجودك عندي مش حاجة عادية أبدا شكرا إنك في حياتي شكرا على كل لحظة حلوة وكل كلمة فرحتيني بيها وكل مرة خلتيني أضحك من قلبي ويارب أشوفك دايما مبسوطة ومريحة وناجحة وأكون موجود في كل لحظة حلوة في حياتك يا حبيبة عمري عارف إن كلامي ممكن يبق متلخبط بس عايزاك تعرفي إنه مفيش ايي رسأله ف الدنيا د تقدر توصف اد اي أنا بحبك 🫂❤️
+            </div>
+            <div class="letter-footer">من فادي إلى مارينا ✨❤️</div>
+        </div>
+    </div>
+
+    <script>
+        /* 1. Login Functionality */
+        function checkPassword() {
+            const val = document.getElementById('password-input').value.trim();
+            if (val === "بحبك") {
+                const overlay = document.getElementById('login-overlay');
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.visibility = 'hidden';
+                }, 800);
+                
+                // Play Audio
+                const audio = document.getElementById('bg-audio');
+                audio.play().catch(e => console.log("Audio autoplay prevented:", e));
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        /* 2. Audio Toggle */
+        function toggleAudio() {
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('audio-toggle');
+            if (audio.paused) {
+                audio.play();
+                btn.innerHTML = '❚❚';
+            } else {
+                audio.pause();
+                btn.innerHTML = '▶';
+            }
+        }
+
+        /* 3. Real Love Counter starting from 1/1/2026 */
+        const startDate = new Date('2026-01-01T00:00:00');
+        
+        function updateCounter() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            if (diff > 0) {
+                const seconds = Math.floor((diff / 1000) % 60);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+                
+                const years = Math.floor(totalDays / 365);
+                const months = Math.floor((totalDays % 365) / 30);
+                const days = Math.floor((totalDays % 365) % 30);
+
+                document.getElementById('years').innerText = years;
+                document.getElementById('months').innerText = months;
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = hours;
+                document.getElementById('minutes').innerText = minutes;
+                document.getElementById('seconds').innerText = seconds;
+            }
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        /* 4. Scroll Reveal Animation for Gallery */
+        function revealOnScroll() {
+            const cards = document.querySelectorAll('.photo-card');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (cardTop < windowHeight - 50) {
+                    card.classList.add('reveal');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        /* 5. Modals Open/Close */
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        /* 6. Floating Hearts Animation */
+        const canvas = document.getElementById('heart-canvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 12 + 8;
+                this.speed = Math.random() * 1.5 + 0.8;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.swing = Math.random() * 0.05;
+                this.swingAngle = Math.random() * Math.PI * 2;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ff3366';
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(this.x, this.y + topCurveHeight);
+                ctx.bezierCurveTo(
+                    this.x, this.y, 
+                    this.x - this.size / 2, this.y, 
+                    this.x - this.size / 2, this.y + topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    this.x - this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x, this.y + this.size, 
+                    this.x, this.y + this.size
+                );
+                ctx.bezierCurveTo(
+                    this.x, this.y + this.size, 
+                    this.x + this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x + this.size / 2, this.y + topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    this.x + this.size / 2, this.y, 
+                    this.x, this.y, 
+                    this.x, this.y + topCurveHeight
+                );
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.swingAngle += this.swing;
+                this.x += Math.sin(this.swingAngle) * 0.5;
+
+                if (this.y < -30) {
+                    this.y = canvas.height + 20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        function initHearts() {
+            hearts = [];
+            for (let i = 0; i < 25; i++) {
+                hearts.push(new Heart());
+            }
+        }
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => {
+                h.update();
+                h.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        initHearts();
+        animateHearts();
+    </script>
+</body>
+</html>
